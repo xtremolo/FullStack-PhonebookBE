@@ -1,0 +1,7 @@
+POST https://fullstack-phonebookbe.onrender.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Val Kilmer",
+    "number": "073-7733377"
+}
