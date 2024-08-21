@@ -8,9 +8,12 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Comment out to include dist-folder for static frontend html pages
 #dist
 dist-ssr
 *.local
+# Environment variables that should not go to git
+.env
 
 # Editor directories and files
 .vscode/*

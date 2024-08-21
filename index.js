@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
+const Person = require("./models/person");
 
 app.use(express.json());
 app.use(cors());
@@ -42,7 +43,10 @@ app.use(
 
 // routes
 app.get("/api/persons", (request, response) => {
-  response.send(persons);
+  Person.find({}).then((people) => {
+    response.json(people);
+  });
+  //response.send(persons);
 });
 
 app.get("/info", (request, response) => {
