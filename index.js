@@ -99,21 +99,23 @@ app.post("/api/persons", (request, response) => {
   }
 
   // name already in the phonebook
-  const nameIdx = persons.findIndex((p) => p.name === body.name);
-  if (nameIdx !== -1) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // const nameIdx = persons.findIndex((p) => p.name === body.name);
+  // if (nameIdx !== -1) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
+    //id: generateId(),
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = persons.concat(person);
-  response.json(person);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
+  //  persons = persons.concat(person);
 }); // routes
 
 const PORT = process.env.PORT || 3001;
