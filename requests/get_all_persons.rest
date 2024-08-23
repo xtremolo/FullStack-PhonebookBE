@@ -1,1 +1,1 @@
-GET https://fullstack-phonebookbe.onrender.com/api/persons
+DELETE http://localhost:3001/api/persons/66c712949b0099ea1701848b

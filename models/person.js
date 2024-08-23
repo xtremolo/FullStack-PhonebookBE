@@ -16,7 +16,6 @@ mongoose
     console.log("Error connecting to MongoDB:", error);
   });
 
-// TODO how about id?
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
