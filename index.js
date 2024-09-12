@@ -50,7 +50,7 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/info", (request, response) => {
-  const time = Date();
+  //  const time = Date();
 
   Person.find({}).then((people) => {
     response.send(`Phonebook has info for ${people.length} people
@@ -58,7 +58,7 @@ app.get("/info", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   Person.findById(id)
     .then((personFound) => {
@@ -68,10 +68,11 @@ app.get("/api/persons/:id", (request, response) => {
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-      response.status(400).send({ error: "malformed id" });
-    }); // persons.find((p) => p.id === id);
+    .catch((error) => next(error));
+  //   {
+  //   console.log(error);
+  //   response.status(400).send({ error: "malformed id" });
+  // }); // persons.find((p) => p.id === id);
 
   // if (person) {
   //   response.json(person);
@@ -154,7 +155,7 @@ app.post("/api/persons", (request, response) => {
 
 // error handling
 const errorHandler = (error, request, response, next) => {
-  console.log(error.message);
+  console.log(error.name, "-", error.message);
 
   // delete
   if (error.name === "CastError") {
