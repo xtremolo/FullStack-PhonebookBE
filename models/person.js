@@ -17,8 +17,22 @@ mongoose
   });
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minlength: 3,
+  },
+  number: {
+    type: String,
+    minlength: 8,
+    validate: {
+      validator: function (numberGiven) {
+        // ^[0-9]{2,3}-[0-9]{4,}$
+        return /^\d{2,3}-\d{4,}$/.test(numberGiven);
+      },
+      message:
+        "Number must be 8 characters minimum, starting with 2-3 numbers, followed by '-', then rest of the numbers",
+    },
+  },
 });
 
 personSchema.set("toJSON", {

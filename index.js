@@ -98,8 +98,13 @@ app.put("/api/persons/:id", (request, response, next) => {
     name: body.name,
     number: body.number,
   };
+  // OR
+  // const { name, number } = request.body
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, {
+    new: true,
+    runValidators: true,
+  })
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
@@ -114,24 +119,22 @@ const generateId = () => {
   return String(Math.floor(Math.random() * persons.length * 100000000));
 };
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
-  //  console.log(body);
-
   // no content sent with request
-  if (!body) {
-    return response.status(400).json({
-      error: "missing content",
-    });
-  }
+  // if (!body) {
+  //   return response.status(400).json({
+  //     error: "missing content",
+  //   });
+  // }
 
   // name or number missing
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "missing name or number",
-    });
-  }
+  // if (!body.name || !body.number) {
+  //   return response.status(400).json({
+  //     error: "missing name or number",
+  //   });
+  // }
 
   // name already in the phonebook
   // const nameIdx = persons.findIndex((p) => p.name === body.name);
@@ -147,9 +150,12 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
   //  persons = persons.concat(person);
 }); // routes
 
@@ -159,10 +165,21 @@ const errorHandler = (error, request, response, next) => {
 
   // delete
   if (error.name === "CastError") {
+    //console.log("CastError");
     return response.status(400).send({ error: "malformed id" });
+  } else if (error.name === "ValidationError") {
+    //console.log("ValidationError");
+    //return response.status(400).json({ error: error.message });
+    return response.status(400).json({ error: error.message });
+  } else if (error.name === "TypeError") {
+    //console.log("TypeError");
+    //    return response.status(410).json({ error: error.message });
+    return response.status(410).json({ error: error });
   }
-  // FIXME rest -- IS THIS SENSIBLE? --
-  return response.status(404).send({ error: "there was an error" });
+
+  console.log("Error type not recognized");
+
+  next(error);
 };
 
 app.use(errorHandler);
